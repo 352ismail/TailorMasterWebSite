@@ -1,6 +1,9 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using tailormaster.Data.DbContext;
 
 namespace TailorMaster
@@ -19,13 +22,25 @@ namespace TailorMaster
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+      
             // Adding Authentication
             builder.Services.AddAuthentication(options =>
             {
+                //for google 
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+
+                //for Jwt
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddCookie()
+            .AddGoogle(options =>
+            {
+                options.ClientId = configuration["GoogleOAuth:Clientid"];
+                options.ClientSecret = configuration["GoogleOAuth:Clientsecret"];
             });
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
@@ -44,7 +59,9 @@ namespace TailorMaster
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
 
             app.MapControllerRoute(
                 name: "default",
