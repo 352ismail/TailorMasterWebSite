@@ -15,6 +15,6 @@ namespace tailormaster.Domain.Models
         public string? Email { get; set; }
         public string Code { get; set; }
         public bool IsVerified { get; set; } = false;
-        public DateTime TokenExpiry { get; set; } = DateTime.UtcNow.AddDays(7);SSSSSSS
+        public DateTime TokenExpiry { get; set; } = DateTime.UtcNow.AddDays(7);
     }
 }
